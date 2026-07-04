@@ -28,9 +28,11 @@ public class TaskController {
     @GetMapping
     public List<TaskResponse> getAllTasks(
             @RequestParam(required = false) Boolean completed,
-            @RequestParam(required = false) String title
+            @RequestParam(required = false) String title,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
     ) {
-        return taskService.getAllTasks(completed, title);
+        return taskService.getAllTasks(completed, title, page, size);
     }
 
 
