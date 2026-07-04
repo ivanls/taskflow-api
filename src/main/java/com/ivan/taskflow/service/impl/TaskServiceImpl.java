@@ -7,6 +7,8 @@ import com.ivan.taskflow.entity.Task;
 import com.ivan.taskflow.exception.TaskNotFoundException;
 import com.ivan.taskflow.repository.TaskRepository;
 import com.ivan.taskflow.service.TaskService;
+import com.ivan.taskflow.specification.TaskSpecification;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -35,18 +37,15 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<TaskResponse> getAllTasks() {
+    public List<TaskResponse> getAllTasks(Boolean completed, String title) {
 
-        return taskRepository.findAll()
+        Specification<Task> spec =
+                Specification.where(TaskSpecification.hasCompleted(completed))
+                        .and(TaskSpecification.hasTitle(title));
+
+        return taskRepository.findAll(spec)
                 .stream()
-                .map(task -> {
-                    TaskResponse response = new TaskResponse();
-                    response.setId(task.getId());
-                    response.setTitle(task.getTitle());
-                    response.setDescription(task.getDescription());
-                    response.setCompleted(task.isCompleted());
-                    return response;
-                })
+                .map(this::toResponse)
                 .toList();
     }
 
