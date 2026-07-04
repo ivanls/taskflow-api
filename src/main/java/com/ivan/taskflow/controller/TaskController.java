@@ -5,6 +5,7 @@ import com.ivan.taskflow.dto.TaskResponse;
 import com.ivan.taskflow.dto.UpdateTaskRequest;
 import com.ivan.taskflow.entity.Task;
 import com.ivan.taskflow.service.TaskService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,14 +20,17 @@ public class TaskController {
     }
 
     @PostMapping
-    public TaskResponse createTask(@RequestBody CreateTaskRequest request) {
+    public TaskResponse createTask(@Valid @RequestBody CreateTaskRequest request) {
         return taskService.createTask(request);
     }
 
 
     @GetMapping
-    public List<TaskResponse> getAllTasks(){
-        return taskService.getAllTasks();
+    public List<TaskResponse> getAllTasks(
+            @RequestParam(required = false) Boolean completed,
+            @RequestParam(required = false) String title
+    ) {
+        return taskService.getAllTasks(completed, title);
     }
 
 
