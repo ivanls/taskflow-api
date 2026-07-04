@@ -73,6 +73,14 @@ public class TaskServiceImpl implements TaskService {
         return toResponse(task);
     }
 
+    @Override
+    public void deleteTask(Long id){
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new TaskNotFoundException("Task not found"));
+
+        taskRepository.delete(task);
+    }
+
     private TaskResponse toResponse(Task task) {
         TaskResponse response = new TaskResponse();
         response.setId(task.getId());
