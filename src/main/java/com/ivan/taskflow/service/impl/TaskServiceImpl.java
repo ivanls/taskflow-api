@@ -7,7 +7,12 @@ import com.ivan.taskflow.entity.Task;
 import com.ivan.taskflow.exception.TaskNotFoundException;
 import com.ivan.taskflow.repository.TaskRepository;
 import com.ivan.taskflow.service.TaskService;
+
 import com.ivan.taskflow.specification.TaskSpecification;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -37,13 +42,17 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<TaskResponse> getAllTasks(Boolean completed, String title) {
+    public List<TaskResponse> getAllTasks(Boolean completed, String title, int page, int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
 
         Specification<Task> spec =
                 Specification.where(TaskSpecification.hasCompleted(completed))
                         .and(TaskSpecification.hasTitle(title));
 
-        return taskRepository.findAll(spec)
+        Page<Task> taskPage = taskRepository.findAll(spec, pageable);
+
+        return taskPage.getContent()
                 .stream()
                 .map(this::toResponse)
                 .toList();
