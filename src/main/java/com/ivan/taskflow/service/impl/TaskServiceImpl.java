@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -42,13 +43,19 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Page<TaskResponse> getAllTasks(Boolean completed, String title, int page, int size) {
-
-        Pageable pageable = PageRequest.of(page, size);
+    public Page<TaskResponse> getAllTasks(
+            Boolean completed, String title, int page, int size, String sortBy, String direction) {
 
         Specification<Task> spec = Specification.<Task>unrestricted()
                 .and(TaskSpecification.hasCompleted(completed))
                 .and(TaskSpecification.hasTitle(title));
+
+        Sort sort = Sort.by(
+                Sort.Direction.fromString(direction),
+                sortBy
+        );
+
+        Pageable pageable = PageRequest.of(page, size, sort);
 
         Page<Task> taskPage = taskRepository.findAll(spec, pageable);
 

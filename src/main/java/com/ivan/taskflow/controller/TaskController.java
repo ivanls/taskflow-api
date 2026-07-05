@@ -31,9 +31,11 @@ public class TaskController {
             @RequestParam(required = false) Boolean completed,
             @RequestParam(required = false) String title,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "createdAt") String sortBy,
+            @RequestParam(defaultValue = "desc") String direction
     ) {
-        return taskService.getAllTasks(completed, title, page, size);
+        return taskService.getAllTasks(completed, title, page, size, sortBy, direction);
     }
 
 
