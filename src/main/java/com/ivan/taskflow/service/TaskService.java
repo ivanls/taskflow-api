@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface TaskService {
     TaskResponse createTask(CreateTaskRequest request);
-    Page<TaskResponse> getAllTasks(Boolean completed, String title, int page, int size);
+    Page<TaskResponse> getAllTasks(Boolean completed, String title, int page, int size,String sortBy,String direction);
     TaskResponse getTaskById(Long id);
     TaskResponse updateTask(Long id, UpdateTaskRequest request);
     void deleteTask(Long id);
