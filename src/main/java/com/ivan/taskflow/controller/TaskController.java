@@ -6,6 +6,7 @@ import com.ivan.taskflow.dto.UpdateTaskRequest;
 import com.ivan.taskflow.entity.Task;
 import com.ivan.taskflow.service.TaskService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,7 +27,7 @@ public class TaskController {
 
 
     @GetMapping
-    public List<TaskResponse> getAllTasks(
+    public Page<TaskResponse> getAllTasks(
             @RequestParam(required = false) Boolean completed,
             @RequestParam(required = false) String title,
             @RequestParam(defaultValue = "0") int page,

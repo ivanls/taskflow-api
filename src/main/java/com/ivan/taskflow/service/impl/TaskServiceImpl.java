@@ -42,20 +42,17 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<TaskResponse> getAllTasks(Boolean completed, String title, int page, int size) {
+    public Page<TaskResponse> getAllTasks(Boolean completed, String title, int page, int size) {
 
         Pageable pageable = PageRequest.of(page, size);
 
-        Specification<Task> spec =
-                Specification.where(TaskSpecification.hasCompleted(completed))
-                        .and(TaskSpecification.hasTitle(title));
+        Specification<Task> spec = Specification.<Task>unrestricted()
+                .and(TaskSpecification.hasCompleted(completed))
+                .and(TaskSpecification.hasTitle(title));
 
         Page<Task> taskPage = taskRepository.findAll(spec, pageable);
 
-        return taskPage.getContent()
-                .stream()
-                .map(this::toResponse)
-                .toList();
+        return taskPage.map(this::toResponse);
     }
 
     @Override
