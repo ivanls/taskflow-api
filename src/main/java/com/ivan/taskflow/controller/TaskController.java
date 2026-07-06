@@ -6,7 +6,9 @@ import com.ivan.taskflow.dto.UpdateTaskRequest;
 import com.ivan.taskflow.entity.Task;
 import com.ivan.taskflow.service.TaskService;
 import jakarta.validation.Valid;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,12 +32,9 @@ public class TaskController {
     public Page<TaskResponse> getAllTasks(
             @RequestParam(required = false) Boolean completed,
             @RequestParam(required = false) String title,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "createdAt") String sortBy,
-            @RequestParam(defaultValue = "desc") String direction
-    ) {
-        return taskService.getAllTasks(completed, title, page, size, sortBy, direction);
+            @ParameterObject Pageable pageable
+    ){
+        return taskService.getAllTasks(completed, title, pageable);
     }
 
 
