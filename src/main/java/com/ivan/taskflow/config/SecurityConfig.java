@@ -16,13 +16,8 @@ public class SecurityConfig {
     // Loads user details for authentication
     private final CustomUserDetailsService customUserDetailsService;
 
-    // Encodes and verifies passwords
-    private final PasswordEncoder passwordEncoder;
-
-    public SecurityConfig(CustomUserDetailsService customUserDetailsService,
-                          PasswordEncoder passwordEncoder) {
+    public SecurityConfig(CustomUserDetailsService customUserDetailsService) {
         this.customUserDetailsService = customUserDetailsService;
-        this.passwordEncoder = passwordEncoder;
     }
 
     // Register the password encoder bean
@@ -37,7 +32,7 @@ public class SecurityConfig {
         DaoAuthenticationProvider provider =
                 new DaoAuthenticationProvider(customUserDetailsService);
 
-        provider.setPasswordEncoder(passwordEncoder);
+        provider.setPasswordEncoder(passwordEncoder());
 
         return provider;
     }
