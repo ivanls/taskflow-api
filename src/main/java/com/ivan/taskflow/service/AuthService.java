@@ -8,6 +8,8 @@ import com.ivan.taskflow.entity.Role;
 import com.ivan.taskflow.entity.User;
 import com.ivan.taskflow.exception.TaskNotFoundException;
 import com.ivan.taskflow.repository.UserRepository;
+import com.ivan.taskflow.security.CustomUserDetailsService;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,11 +23,15 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
+    private final CustomUserDetailsService customUserDetailsService;
 
-    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager) {
+    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtService jwtService, CustomUserDetailsService customUserDetailsService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
+        this.jwtService = jwtService;
+        this.customUserDetailsService = customUserDetailsService;
     }
 
     public RegisterResponse register(RegisterRequest request) {
@@ -56,7 +62,12 @@ public class AuthService {
                 )
         );
 
-        return new LoginResponse("LOGIN OK");
+        UserDetails userDetails =
+                customUserDetailsService.loadUserByUsername(request.getUsername());
+
+        String token = jwtService.generateToken(userDetails);
+
+        return new LoginResponse(token);
     }
 
 
