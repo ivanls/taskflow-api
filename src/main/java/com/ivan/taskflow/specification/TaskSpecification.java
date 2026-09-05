@@ -17,4 +17,10 @@ public class TaskSpecification {
                         cb.like(cb.lower(root.get("title")),
                                 "%" + title.toLowerCase() + "%");
     }
+
+    public static Specification<Task> hasUser(Long userId) {
+        return (root, query, cb) ->
+                userId == null ? null :
+                        cb.equal(root.get("user").get("id"), userId);
+    }
 }

@@ -29,4 +29,8 @@ public class Task {
 
     @JsonIgnore
     private LocalDateTime createdAt;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 }

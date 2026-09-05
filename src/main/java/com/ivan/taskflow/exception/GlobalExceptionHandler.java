@@ -34,4 +34,12 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.BAD_REQUEST)
                 .body(errors);
     }
+
+    @ExceptionHandler(TaskAccessDeniedException.class)
+    public ResponseEntity<?> handleTaskAccessDenied(TaskAccessDeniedException ex) {
+
+        return ResponseEntity
+                .status(403)
+                .body(ex.getMessage());
+    }
 }
