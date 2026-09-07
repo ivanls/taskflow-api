@@ -51,8 +51,7 @@ public class TaskServiceImpl implements TaskService {
         User currentUser = getCurrentUser();
 
         Specification<Task> spec =
-                Specification.<Task>unrestricted()
-                        .and(TaskSpecification.hasUser(currentUser.getId()))
+                TaskSpecification.hasUser(currentUser.getId())
                         .and(TaskSpecification.hasCompleted(completed))
                         .and(TaskSpecification.hasTitle(title));
 

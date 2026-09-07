@@ -3,6 +3,8 @@ package com.ivan.taskflow.specification;
 import com.ivan.taskflow.entity.Task;
 import org.springframework.data.jpa.domain.Specification;
 
+import java.util.Locale;
+
 public class TaskSpecification {
 
     public static Specification<Task> hasCompleted(Boolean completed) {
@@ -15,7 +17,7 @@ public class TaskSpecification {
         return (root, query, cb) ->
                 (title == null || title.isBlank()) ? null :
                         cb.like(cb.lower(root.get("title")),
-                                "%" + title.toLowerCase() + "%");
+                                "%" + title.toLowerCase(Locale.ROOT) + "%");
     }
 
     public static Specification<Task> hasUser(Long userId) {
