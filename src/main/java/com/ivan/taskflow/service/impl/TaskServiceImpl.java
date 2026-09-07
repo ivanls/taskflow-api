@@ -107,7 +107,7 @@ public class TaskServiceImpl implements TaskService {
                 .getName();
 
         return userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new RuntimeException("Authenticated user not found"));
     }
 
     private Task getTaskForCurrentUser(Long id) {

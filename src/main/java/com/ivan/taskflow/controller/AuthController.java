@@ -1,6 +1,9 @@
 package com.ivan.taskflow.controller;
 
-import com.ivan.taskflow.dto.*;
+import com.ivan.taskflow.dto.LoginRequest;
+import com.ivan.taskflow.dto.LoginResponse;
+import com.ivan.taskflow.dto.RegisterRequest;
+import com.ivan.taskflow.dto.RegisterResponse;
 import com.ivan.taskflow.service.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,7 +27,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public LoginResponse login(@RequestBody LoginRequest request) {
+    public LoginResponse login(@Valid @RequestBody LoginRequest request) {
         return authService.login(request);
     }
 }
