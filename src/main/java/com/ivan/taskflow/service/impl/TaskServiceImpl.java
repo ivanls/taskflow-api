@@ -84,13 +84,19 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public TaskResponse updateTask (Long id, UpdateTaskRequest request){
+
+        User user = getCurrentUser();
+
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new TaskNotFoundException("Task not found"));
+
+        if (!task.getUser().getId().equals(user.getId())) {
+            throw new TaskAccessDeniedException("You don't have access to this task");
+        }
 
         task.setTitle(request.getTitle());
         task.setDescription(request.getDescription());
         task.setCompleted(request.getCompleted());
-
         taskRepository.save(task);
 
         return toResponse(task);
@@ -98,8 +104,15 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public void deleteTask(Long id){
+
+        User user = getCurrentUser();
+
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new TaskNotFoundException("Task not found"));
+
+        if (!task.getUser().getId().equals(user.getId())) {
+            throw new TaskAccessDeniedException("You don't have access to this task");
+        }
 
         taskRepository.delete(task);
     }

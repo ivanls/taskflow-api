@@ -1,8 +1,14 @@
 package com.ivan.taskflow.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 public class UpdateTaskRequest {
+    @NotBlank
     private String title;
+    @NotBlank
     private String description;
+    @NotNull
     private Boolean completed;
 
     public String getTitle() {
