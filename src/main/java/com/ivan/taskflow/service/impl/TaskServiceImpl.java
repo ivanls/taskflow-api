@@ -5,24 +5,18 @@ import com.ivan.taskflow.dto.TaskResponse;
 import com.ivan.taskflow.dto.UpdateTaskRequest;
 import com.ivan.taskflow.entity.Task;
 import com.ivan.taskflow.entity.User;
-import com.ivan.taskflow.exception.TaskAccessDeniedException;
 import com.ivan.taskflow.exception.TaskNotFoundException;
 import com.ivan.taskflow.repository.TaskRepository;
 import com.ivan.taskflow.repository.UserRepository;
 import com.ivan.taskflow.service.TaskService;
-
 import com.ivan.taskflow.specification.TaskSpecification;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 public class TaskServiceImpl implements TaskService {
@@ -70,14 +64,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public TaskResponse getTaskById(Long id) {
 
-        User user = getCurrentUser();
-
-        Task task = taskRepository.findById(id)
-                .orElseThrow(() -> new TaskNotFoundException("Task not found"));
-
-        if (!task.getUser().getId().equals(user.getId())) {
-            throw new TaskAccessDeniedException("You don't have access to this task");
-        }
+        Task task = getTaskForCurrentUser(id);
 
         return toResponse(task);
     }
@@ -85,14 +72,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public TaskResponse updateTask (Long id, UpdateTaskRequest request){
 
-        User user = getCurrentUser();
-
-        Task task = taskRepository.findById(id)
-                .orElseThrow(() -> new TaskNotFoundException("Task not found"));
-
-        if (!task.getUser().getId().equals(user.getId())) {
-            throw new TaskAccessDeniedException("You don't have access to this task");
-        }
+        Task task = getTaskForCurrentUser(id);
 
         task.setTitle(request.getTitle());
         task.setDescription(request.getDescription());
@@ -105,14 +85,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public void deleteTask(Long id){
 
-        User user = getCurrentUser();
-
-        Task task = taskRepository.findById(id)
-                .orElseThrow(() -> new TaskNotFoundException("Task not found"));
-
-        if (!task.getUser().getId().equals(user.getId())) {
-            throw new TaskAccessDeniedException("You don't have access to this task");
-        }
+        Task task = getTaskForCurrentUser(id);
 
         taskRepository.delete(task);
     }
@@ -136,5 +109,13 @@ public class TaskServiceImpl implements TaskService {
 
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+    private Task getTaskForCurrentUser(Long id) {
+
+        User user = getCurrentUser();
+
+        return taskRepository.findByIdAndUserId(id, user.getId())
+                .orElseThrow(() -> new TaskNotFoundException("Task not found"));
     }
 }
