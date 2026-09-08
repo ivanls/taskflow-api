@@ -24,5 +24,6 @@ public class User {
     private String password; //This has to be saved encrypted
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Role role;
 }

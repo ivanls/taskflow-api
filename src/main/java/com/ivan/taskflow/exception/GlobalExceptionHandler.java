@@ -2,7 +2,6 @@ package com.ivan.taskflow.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -15,9 +14,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(TaskNotFoundException.class)
     public ResponseEntity<?> handleTaskNotFound(TaskNotFoundException ex) {
-
         return ResponseEntity
-                .status(404)
+                .status(HttpStatus.NOT_FOUND)
                 .body(ex.getMessage());
     }
 
@@ -33,13 +31,5 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(errors);
-    }
-
-    @ExceptionHandler(TaskAccessDeniedException.class)
-    public ResponseEntity<?> handleTaskAccessDenied(TaskAccessDeniedException ex) {
-
-        return ResponseEntity
-                .status(403)
-                .body(ex.getMessage());
     }
 }
